@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinFlow — Iniciar sesión</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    .tab-btns { display: flex; gap: 0; background: var(--bg-input); border-radius: 8px; padding: 4px; margin-bottom: 24px; }
+    .tab-btn  { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: .875rem; font-weight: 600; transition: all .2s; }
+    .tab-btn.active { background: var(--bg-card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+    .tab-panel { display: none; } .tab-panel.active { display: block; }
+    .forgot { font-size: .8rem; color: var(--primary); cursor: pointer; }
+    .forgot:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">💰</div>
+      <h1>Fin<span>Flow</span></h1>
+      <p>Gestión financiera inteligente</p>
+    </div>
+
+    <div class="tab-btns">
+      <button class="tab-btn active" onclick="switchTab('login', this)">Iniciar sesión</button>
+      <button class="tab-btn" onclick="switchTab('register', this)">Registrarse</button>
+    </div>
+
+    <!-- Login -->
+    <div id="tab-login" class="tab-panel active">
+      <form id="form-login" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email-login">Correo electrónico</label>
+          <input id="email-login" class="form-control" type="email" placeholder="tu@correo.com" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="form-group">
+          <label for="pass-login">Contraseña</label>
+          <input id="pass-login" class="form-control" type="password" placeholder="••••••••" required>
+          <span class="error-msg"></span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin:-8px 0 16px">
+          <span class="forgot">¿Olvidaste tu contraseña?</span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Ingresar →</button>
+      </form>
+    </div>
+
+    <!-- Register -->
+    <div id="tab-register" class="tab-panel">
+      <form id="form-register" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="name-reg">Nombre completo</label>
+          <input id="name-reg" class="form-control" type="text" placeholder="Tu nombre" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="form-group">
+          <label for="email-reg">Correo electrónico</label>
+          <input id="email-reg" class="form-control" type="email" placeholder="tu@correo.com" required>
+          <span class="error-msg"></span>
+        </div>
+        <div class="form-group">
+          <label for="pass-reg">Contraseña</label>
+          <input id="pass-reg" class="form-control" type="password" placeholder="Mínimo 8 caracteres" required>
+          <span class="error-msg"></span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Crear cuenta →</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+  function handleLogin(e) {
+    e.preventDefault();
+    if (!validateForm(e.target)) return;
+    showToast('Iniciando sesión...', 'info');
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+  }
+  function handleRegister(e) {
+    e.preventDefault();
+    if (!validateForm(e.target)) return;
+    showToast('Cuenta creada exitosamente', 'success');
+    setTimeout(() => switchTab('login', document.querySelectorAll('.tab-btn')[0]), 1200);
+  }
+</script>
+</body>
+</html>

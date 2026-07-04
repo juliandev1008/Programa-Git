@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinFlow — Dashboard</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💰</div>
+      <div class="logo-text">Fin<span>Flow</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Principal</div>
+      <a class="nav-item active" href="dashboard.html" data-page="dashboard.html">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a class="nav-item" href="transacciones.html" data-page="transacciones.html">
+        <span class="nav-icon">💳</span> Transacciones
+      </a>
+      <a class="nav-item" href="cuentas.html" data-page="cuentas.html">
+        <span class="nav-icon">🏦</span> Cuentas
+      </a>
+      <div class="nav-group-label">Gestión</div>
+      <a class="nav-item" href="presupuestos.html" data-page="presupuestos.html">
+        <span class="nav-icon">🎯</span> Presupuestos
+      </a>
+      <a class="nav-item" href="categorias.html" data-page="categorias.html">
+        <span class="nav-icon">🏷️</span> Categorías
+      </a>
+      <a class="nav-item" href="transferencias.html" data-page="transferencias.html">
+        <span class="nav-icon">🔄</span> Transferencias
+      </a>
+      <div class="nav-group-label">Análisis</div>
+      <a class="nav-item" href="reportes.html" data-page="reportes.html">
+        <span class="nav-icon">📈</span> Reportes
+      </a>
+      <div class="nav-group-label">Cuenta</div>
+      <a class="nav-item" href="perfil.html" data-page="perfil.html">
+        <span class="nav-icon">👤</span> Perfil
+      </a>
+      <a class="nav-item" href="index.html">
+        <span class="nav-icon">🚪</span> Cerrar sesión
+      </a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar">JU</div>
+      <div class="user-info">
+        <div class="name">Julián Upegui</div>
+        <div class="role">Usuario</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="topbar-btn" id="sidebar-toggle">☰</button>
+        <span class="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" title="Notificaciones">🔔</button>
+        <button class="btn btn-primary btn-sm" onclick="document.getElementById('modal-tx').classList.add('open')">+ Nueva transacción</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-header">
+        <h1>Resumen financiero</h1>
+        <p>Mayo 2025 — Actualizado hace 5 minutos</p>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stats-grid">
+        <div class="stat-card balance">
+          <span class="stat-label">Saldo total</span>
+          <span class="stat-value balance" id="val-balance">$ 4.250.000</span>
+          <span class="stat-delta">Todas las cuentas</span>
+        </div>
+        <div class="stat-card income">
+          <span class="stat-label">Ingresos del mes</span>
+          <span class="stat-value income" id="val-income">$ 3.800.000</span>
+          <span class="stat-delta"><span class="up">↑ 12%</span> vs mes anterior</span>
+        </div>
+        <div class="stat-card expense">
+          <span class="stat-label">Egresos del mes</span>
+          <span class="stat-value expense" id="val-expense">$ 2.150.000</span>
+          <span class="stat-delta"><span class="down">↑ 5%</span> vs mes anterior</span>
+        </div>
+        <div class="stat-card budget">
+          <span class="stat-label">Presupuesto usado</span>
+          <span class="stat-value" style="color:var(--accent)" id="val-budget">68%</span>
+          <span class="stat-delta">$ 1.462.000 de $ 2.150.000</span>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Ingresos vs Egresos</span>
+            <span class="card-subtitle">Últimos 6 meses</span>
+          </div>
+          <div class="chart-container" style="height:220px">
+            <canvas id="chart-bar"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Gasto por categoría</span>
+            <span class="card-subtitle">Mayo 2025</span>
+          </div>
+          <div class="chart-container" style="height:220px;display:flex;align-items:center;justify-content:center">
+            <canvas id="chart-donut" style="max-height:200px"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Últimas transacciones -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Últimas transacciones</span>
+          <a href="transacciones.html" class="btn btn-secondary btn-sm">Ver todas →</a>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Cuenta</th><th>Monto</th><th>Tipo</th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody">
+              <tr><td>15 may 2025</td><td>Salario mayo</td><td>🏢 Trabajo</td><td>Bancolombia</td><td style="color:var(--success);font-family:var(--font-mono)">+$3.800.000</td><td><span class="badge badge-success">Ingreso</span></td></tr>
+              <tr><td>14 may 2025</td><td>Supermercado Éxito</td><td>🛒 Mercado</td><td>Nequi</td><td style="color:var(--danger);font-family:var(--font-mono)">-$285.000</td><td><span class="badge badge-danger">Egreso</span></td></tr>
+              <tr><td>13 may 2025</td><td>Netflix</td><td>🎬 Entretenimiento</td><td>Bancolombia</td><td style="color:var(--danger);font-family:var(--font-mono)">-$38.900</td><td><span class="badge badge-danger">Egreso</span></td></tr>
+              <tr><td>12 may 2025</td><td>Arriendo</td><td>🏠 Vivienda</td><td>Bancolombia</td><td style="color:var(--danger);font-family:var(--font-mono)">-$900.000</td><td><span class="badge badge-danger">Egreso</span></td></tr>
+              <tr><td>10 may 2025</td><td>Freelance diseño</td><td>💻 Trabajo extra</td><td>Daviplata</td><td style="color:var(--success);font-family:var(--font-mono)">+$450.000</td><td><span class="badge badge-success">Ingreso</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal nueva transacción -->
+<div class="modal-overlay" id="modal-tx">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nueva Transacción</span>
+      <button class="btn btn-icon btn-secondary" onclick="document.getElementById('modal-tx').classList.remove('open')">✕</button>
+    </div>
+    <form onsubmit="guardarTx(event)">
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <button type="button" class="btn btn-primary btn-sm" id="tipo-ingreso" onclick="setTipo('ingreso')">↑ Ingreso</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="tipo-egreso" onclick="setTipo('egreso')">↓ Egreso</button>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <input class="form-control" type="text" placeholder="Ej: Salario mayo" required>
+        <span class="error-msg"></span>
+      </div>
+      <div class="form-group">
+        <label>Monto (COP)</label>
+        <input class="form-control" type="number" placeholder="0" min="0" required>
+        <span class="error-msg"></span>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Categoría</label>
+          <select class="form-control" required>
+            <option value="">Seleccionar...</option>
+            <option>🏢 Trabajo</option><option>🛒 Mercado</option>
+            <option>🏠 Vivienda</option><option>🎬 Entretenimiento</option>
+            <option>💊 Salud</option><option>📚 Educación</option>
+          </select>
+          <span class="error-msg"></span>
+        </div>
+        <div class="form-group">
+          <label>Fecha</label>
+          <input class="form-control" type="date" required>
+          <span class="error-msg"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Cuenta</label>
+        <select class="form-control" required>
+          <option value="">Seleccionar...</option>
+          <option>Bancolombia</option><option>Nequi</option><option>Daviplata</option>
+        </select>
+        <span class="error-msg"></span>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-tx').classList.remove('open')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/app.js"></script>
+<script>
+  // Gráfico barras
+  new Chart(document.getElementById('chart-bar'), {
+    type: 'bar',
+    data: {
+      labels: ['Dic','Ene','Feb','Mar','Abr','May'],
+      datasets: [
+        { label:'Ingresos', data:[3200,3500,3100,3800,3600,3800], backgroundColor:'rgba(34,197,94,.7)', borderRadius:6 },
+        { label:'Egresos',  data:[2100,2400,1900,2200,2050,2150], backgroundColor:'rgba(239,68,68,.7)',  borderRadius:6 }
+      ]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#94A3B8',font:{size:11}}}}, scales:{ x:{ticks:{color:'#94A3B8'},grid:{color:'rgba(255,255,255,.05)'}}, y:{ticks:{color:'#94A3B8'},grid:{color:'rgba(255,255,255,.05)'}} } }
+  });
+  // Gráfico donut
+  new Chart(document.getElementById('chart-donut'), {
+    type: 'doughnut',
+    data: {
+      labels:['Vivienda','Mercado','Transporte','Entretenimiento','Salud','Otros'],
+      datasets:[{ data:[42,18,12,10,8,10], backgroundColor:['#0D9488','#22C55E','#F59E0B','#3B82F6','#A855F7','#94A3B8'], borderWidth:0, hoverOffset:4 }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{legend:{position:'right',labels:{color:'#94A3B8',font:{size:11},boxWidth:12,padding:10}}} }
+  });
+  function setTipo(t) {
+    document.getElementById('tipo-ingreso').className = t==='ingreso'?'btn btn-primary btn-sm':'btn btn-secondary btn-sm';
+    document.getElementById('tipo-egreso').className  = t==='egreso' ?'btn btn-danger btn-sm':'btn btn-secondary btn-sm';
+  }
+  function guardarTx(e) {
+    e.preventDefault();
+    if (!validateForm(e.target)) return;
+    document.getElementById('modal-tx').classList.remove('open');
+    showToast('Transacción guardada', 'success');
+    e.target.reset();
+  }
+</script>
+</body>
+</html>
