@@ -5,4 +5,7 @@ target/
 *.class
 *.log
 config/database.properties
-
+modulo-react-usuarios/node_modules/
+modulo-react-usuarios/dist/
+output/
+.pnpm-store/
